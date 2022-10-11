@@ -22,14 +22,18 @@ params:add_separator('johann')
 params:add{
     id = 'level', type = 'control',
     controlspec = cs.def{ min = 0, max = 15, default = 9 },
-    action = function(v) engine.level(v) end,
+    action = function(v) 
+        engine.level(v) 
+    end,
 }
 params:add{
     id = 'rate', type = 'control',
     controlspec = cs.def{ 
         min = -2, max = 2, default = -0.12, quantum = 1/100/4,
     },
-    action = function(v) engine.rate(2^v) end,
+    action = function(v) 
+        engine.rate(2^v) 
+    end,
 }
 
 m = midi.connect()
@@ -53,7 +57,6 @@ Grid = include 'lib/nest/grid'
 multipattern = include 'lib/nest/util/pattern-tools/multipattern'
 of = include 'lib/nest/util/of'
 to = include 'lib/nest/util/to'
-PatternRecorder = include 'lib/nest/examples/grid/pattern_recorder'
 
 cartographer, Slice = include 'lib/cartographer/cartographer'
 crowify = include 'lib/crowify/lib/crowify' .new(0.01)
@@ -75,12 +78,11 @@ end
 
 --set up nest v2 UI
 
-local App = {}
+local _app = Wrms.lite()
 
-local _app = { norns = Wrms.lite() }
-nest.connect_enc(_app.norns)
-nest.connect_key(_app.norns)
-nest.connect_screen(_app.norns, 24)
+nest.connect_enc(_app)
+nest.connect_key(_app)
+nest.connect_screen(_app, 60)
 
 --init/cleanup
 
@@ -88,16 +90,18 @@ function init()
     -- send the engine a folder of samples, naming format is the same as mx.samples
     engine.loadfolder(_path.audio .. 'johann/classic')
 
+    params:set('>', 0)
+    params:set('<', 1)
+    params:set('input routing', 2)
+
     wrms.setup()
-
     params:read()
-
     wrms.load()
 
     params:bang()
 end
 
 function cleanup() 
-    wrms.save()
+    -- wrms.save()
     params:write()
 end
