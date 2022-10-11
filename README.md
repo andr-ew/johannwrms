@@ -1,6 +1,6 @@
-# orgnwrms
+# johannwrms
 
-orgn + wrms
+johann + wrms
 
 ## requirements
 
